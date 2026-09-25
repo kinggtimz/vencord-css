@@ -1,0 +1,217 @@
+/**
+ * @name Neon Cyberpunk Discord
+ * @description Dark background, glowing neon accents, subtle smooth animations.
+ * @author kinggtimz
+ *
+ * All colors live in the :root block below — change --neon-primary /
+ * --neon-secondary to shift the whole theme's palette in one place.
+ *
+ * NOTE: Discord's class names are hashed/obfuscated and change with updates.
+ * This uses [class*="..."] "contains" selectors wherever possible so it
+ * survives most hash changes, but some things may need re-inspecting after
+ * a Discord update if a rule stops applying.
+ */
+
+:root {
+  --neon-primary: #00fff2;      /* cyan */
+  --neon-secondary: #ff00e6;    /* magenta */
+  --neon-tertiary: #7f00ff;     /* purple */
+  --neon-bg: #05050a;
+  --neon-bg-alt: #0b0b14;
+  --neon-glow-soft: 0 0 6px;
+  --neon-glow-strong: 0 0 14px;
+  --neon-border: 1px solid color-mix(in srgb, var(--neon-primary) 50%, transparent);
+  --neon-transition: 0.3s ease;
+}
+
+/*---===< BASE BACKGROUNDS — DARKEN EVERYTHING >===---*/
+
+[class*="sidebar_"],
+[class*="guilds_"],
+[class*="chat_"],
+[class*="content_"],
+[class*="container_"][class*="base_"] {
+  background-color: var(--neon-bg) !important;
+}
+
+[class*="channels_"],
+[class*="chatContent_"] {
+  background-color: var(--neon-bg-alt) !important;
+}
+
+/*---===< ANIMATED GRADIENT ACCENT LINE (top of app) >===---*/
+
+@keyframes neon-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+[class*="appMount_"]::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 9999;
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-secondary), var(--neon-tertiary), var(--neon-primary));
+  background-size: 300% 100%;
+  animation: neon-shift 8s ease infinite;
+  pointer-events: none;
+}
+
+/*---===< SERVER ICONS — GLOW ON HOVER / ACTIVE >===---*/
+
+[class*="guilds_"] [class*="listItem_"] {
+  transition: transform var(--neon-transition);
+}
+
+[class*="guilds_"] [class*="listItem_"]:hover [class*="wrapper_"] svg,
+[class*="guilds_"] [class*="listItem_"]:hover [class*="wrapper_"] img {
+  box-shadow: var(--neon-glow-soft) var(--neon-primary);
+  transition: box-shadow var(--neon-transition);
+}
+
+[class*="guilds_"] [class*="selected_"] [class*="wrapper_"] {
+  box-shadow: var(--neon-glow-strong) var(--neon-secondary);
+  transition: box-shadow var(--neon-transition);
+}
+
+/* the little pill indicator next to an active/unread server */
+[class*="guilds_"] [class*="pill_"] {
+  background-color: var(--neon-primary) !important;
+  box-shadow: var(--neon-glow-soft) var(--neon-primary);
+}
+
+/*---===< CHANNEL LIST — HOVER GLOW + ACTIVE CHANNEL BORDER >===---*/
+
+[class*="channels_"] [class*="link_"] {
+  transition: background-color var(--neon-transition), box-shadow var(--neon-transition);
+  border-radius: 6px;
+}
+
+[class*="channels_"] [class*="link_"]:hover {
+  background-color: color-mix(in srgb, var(--neon-primary) 8%, transparent) !important;
+}
+
+[class*="channels_"] [aria-selected="true"] {
+  background-color: color-mix(in srgb, var(--neon-secondary) 12%, transparent) !important;
+  box-shadow: inset 2px 0 0 0 var(--neon-secondary);
+}
+
+/*---===< MESSAGES — SUBTLE HOVER HIGHLIGHT >===---*/
+
+[class*="message_"]:hover {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--neon-primary) 4%, transparent), transparent 40%) !important;
+  transition: background var(--neon-transition);
+}
+
+/* mentions get a neon outline instead of the default yellow block */
+[class*="mention_"] {
+  background-color: color-mix(in srgb, var(--neon-secondary) 18%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--neon-secondary) 60%, transparent) !important;
+  color: var(--neon-secondary) !important;
+  border-radius: 4px;
+  transition: box-shadow var(--neon-transition);
+}
+
+[class*="mention_"]:hover {
+  box-shadow: var(--neon-glow-soft) var(--neon-secondary);
+}
+
+/*---===< LINKS >===---*/
+
+a[class*="anchor_"],
+[class*="messageContent_"] a {
+  color: var(--neon-primary) !important;
+  text-shadow: none;
+  transition: text-shadow var(--neon-transition), color var(--neon-transition);
+}
+
+a[class*="anchor_"]:hover,
+[class*="messageContent_"] a:hover {
+  text-shadow: var(--neon-glow-soft) var(--neon-primary);
+}
+
+/*---===< CODE BLOCKS / EMBEDS — NEON BORDER >===---*/
+
+[class*="embedFull_"],
+[class*="embedGrid_"],
+code[class*="inline_"],
+pre[class*="codeBlock_"] {
+  border-left: 2px solid var(--neon-tertiary) !important;
+  background-color: color-mix(in srgb, var(--neon-bg-alt) 90%, var(--neon-tertiary) 10%) !important;
+  transition: border-color var(--neon-transition);
+}
+
+[class*="embedFull_"]:hover,
+[class*="embedGrid_"]:hover {
+  border-left-color: var(--neon-secondary) !important;
+}
+
+/*---===< BUTTONS — GLOW ON HOVER >===---*/
+
+button[class*="button_"][class*="colorBrand_"],
+button[class*="lookFilled_"][class*="colorBrand_"] {
+  background: linear-gradient(90deg, var(--neon-tertiary), var(--neon-secondary)) !important;
+  border: none !important;
+  transition: box-shadow var(--neon-transition), transform var(--neon-transition);
+}
+
+button[class*="button_"][class*="colorBrand_"]:hover,
+button[class*="lookFilled_"][class*="colorBrand_"]:hover {
+  box-shadow: var(--neon-glow-soft) var(--neon-secondary);
+}
+
+/*---===< SCROLLBARS >===---*/
+
+[class*="scroller_"]::-webkit-scrollbar {
+  width: 8px;
+}
+
+[class*="scroller_"]::-webkit-scrollbar-track {
+  background: var(--neon-bg);
+}
+
+[class*="scroller_"]::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--neon-primary), var(--neon-tertiary));
+  border-radius: 8px;
+  transition: box-shadow var(--neon-transition);
+}
+
+[class*="scroller_"]::-webkit-scrollbar-thumb:hover {
+  box-shadow: var(--neon-glow-soft) var(--neon-primary);
+}
+
+/*---===< TEXT INPUT / MESSAGE BOX — GLOWING FOCUS BORDER >===---*/
+
+form [class*="channelTextArea_"] {
+  border: var(--neon-border) !important;
+  background-color: var(--neon-bg-alt) !important;
+  transition: box-shadow var(--neon-transition), border-color var(--neon-transition);
+}
+
+form [class*="channelTextArea_"]:focus-within {
+  border-color: var(--neon-primary) !important;
+  box-shadow: var(--neon-glow-soft) color-mix(in srgb, var(--neon-primary) 50%, transparent);
+}
+
+/*---===< STATUS INDICATORS — GLOW MATCHING THEIR COLOR >===---*/
+
+[class*="pointer_"][style*="fill: var(--status-online)"],
+svg[class*="online_"] {
+  filter: drop-shadow(0 0 3px #23a55966);
+}
+
+/*---===< UNREAD BADGES — NEON PULSE (slow, subtle) >===---*/
+
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 4px var(--neon-secondary); }
+  50%      { box-shadow: 0 0 9px var(--neon-secondary); }
+}
+
+[class*="numberBadge_"] {
+  background-color: var(--neon-secondary) !important;
+  animation: neon-pulse 3s ease-in-out infinite;
+}
