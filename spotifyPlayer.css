@@ -2,13 +2,14 @@
  * @name Improved Spotify Controls
  * @description A visual overhaul of the Vencord Spotify Controls plugin.
  * @author Soul
- * @version v3.1
+ * @version v3.1 (performance-trimmed edit)
  * @source https://github.com/ISOUL22/rice/blob/main/Vencord/spotifyPlayer.css
 */
 
 :root {
   --isc-bg: var(--bg-4, var(--background-base-low));
-  --isc-bg-blur: 2px;
+  /* blur removed for performance — see #vc-spotify-player::before below */
+  --isc-bg-blur: 0px;
   --isc-bg-brightness: 0.5;
   /* SET TO FALSE to keep the compact player instead of the big square */
   --ics-full-album-art: false;
@@ -48,12 +49,14 @@ body {
   display: none;
 }
 
+/* PERFORMANCE: blur() removed — it was the single biggest lag source since it
+   re-renders a full-size blurred image continuously. Brightness dimming kept. */
 #vc-spotify-player::before {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 0;
-  filter: blur(var(--isc-bg-blur)) brightness(var(--isc-bg-brightness, 1));
+  filter: brightness(var(--isc-bg-brightness, 1));
   border-radius: inherit;
   background-image: var(--vc-spotify-track-image);
   background-position: center;
@@ -131,7 +134,7 @@ body {
   margin-top: 2px;
 }
 
-/*---===< PROGRESS BAR — GRADIENT + GLOW >===---*/
+/*---===< PROGRESS BAR — GRADIENT + GLOW (lightened) >===---*/
 
 #vc-spotify-progress-bar {
   margin: 0px;
@@ -144,10 +147,11 @@ body {
   transition: height 0.2s ease, background-color 0.2s ease;
 }
 
+/* PERFORMANCE: static glow removed from idle state — gradient fill kept */
 #vc-spotify-player .barFill__4c059 {
   background: linear-gradient(90deg, var(--isc-progress-bar-start), var(--isc-progress-bar-end));
   border-radius: 3px;
-  box-shadow: 0 0 6px 0 var(--isc-progress-bar-glow);
+  box-shadow: none;
   transition: box-shadow 0.2s ease, background 0.2s ease;
 }
 
@@ -155,8 +159,9 @@ body {
   height: 7px !important;
 }
 
+/* PERFORMANCE: smaller glow radius on hover instead of a large one */
 #vc-spotify-progress-bar:hover .barFill__4c059 {
-  box-shadow: 0 0 10px 1px var(--isc-progress-bar-glow);
+  box-shadow: 0 0 4px 0 var(--isc-progress-bar-glow);
 }
 
 #vc-spotify-progress-bar .grabber__4c059 {
@@ -167,7 +172,7 @@ body {
   margin-left: -8px;
   border: solid 2px hsla(0, 0%, 0%, 0.3);
   background-color: var(--isc-progress-bar-hover);
-  box-shadow: 0 0 8px 1px var(--isc-progress-bar-glow);
+  box-shadow: 0 0 6px 0 var(--isc-progress-bar-glow);
   width: 16px;
   height: 16px;
 }
@@ -193,13 +198,13 @@ body {
   width: 40px;
   height: 25px;
   color: var(--isc-button-icon);
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* PERFORMANCE: scale-on-hover transform removed — color/bg change kept */
 .vc-spotify-button:hover {
   background-color: var(--isc-button-bg-hover);
   color: var(--isc-button-icon-hover);
-  transform: scale(1.1);
 }
 
 .vc-spotify-button-icon {
@@ -385,6 +390,9 @@ section.panels__5e434 {
   background-color: hsla(0, 0%, 0%, 0.4);
   border-radius: 8px;
   border: solid 1px rgb(36, 36, 36);
+  /* PERFORMANCE: backdrop-filter blur removed — was the other major lag source.
+     Uncomment the line below if you want it back and don't mind the FPS cost. */
+  /* backdrop-filter: blur(1px); */
 }
 
 .activityPanel__5e434,
@@ -409,13 +417,12 @@ section.panels__5e434 {
   padding-bottom: 60px;
 }
 
-/*---===< SMOOTHER HOVER EFFECTS >===---*/
+/*---===< SMOOTHER HOVER EFFECTS (transform removed for performance) >===---*/
 
 #vc-spotify-player {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: box-shadow 0.25s ease;
 }
 
 #vc-spotify-player:hover {
-  transform: scale(1.015);
-  box-shadow: 0 4px 20px hsla(0, 0%, 0%, 0.4);
+  box-shadow: 0 4px 14px hsla(0, 0%, 0%, 0.35);
 }
